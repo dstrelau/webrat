@@ -28,6 +28,8 @@ module Webrat
       MechanizeSession
     when :rack_test
       RackTestSession
+    when :culerity
+      CuleritySession
     else
       raise WebratError.new(<<-STR)
 Unknown Webrat mode: #{Webrat.configuration.mode.inspect}
