@@ -1,5 +1,6 @@
 require "culerity"
 require "forwardable"
+require "webrat/core/save_and_open_page"
 
 module Webrat #:nodoc:
   class CulerityResponse
@@ -11,6 +12,7 @@ module Webrat #:nodoc:
   end
 
   class CuleritySession #:nodoc:
+    include Webrat::SaveAndOpenPage
     extend Forwardable
 
     attr_reader :current_url
