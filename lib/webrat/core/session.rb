@@ -33,6 +33,8 @@ module Webrat
       SinatraSession
     when :mechanize
       MechanizeSession
+    when :culerity
+      CuleritySession
     else
       raise WebratError.new(<<-STR)
 Unknown Webrat mode: #{Webrat.configuration.mode.inspect}
