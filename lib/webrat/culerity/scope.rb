@@ -74,6 +74,30 @@ module Webrat
 
     webrat_deprecate :selects, :select
 
+    DATE_TIME_SUFFIXES = {
+      :year   => '1i',
+      :month  => '2i',
+      :day    => '3i',
+      :hour   => '4i',
+      :minute => '5i'
+    }
+
+    # FIXME duplication with webrat/core/scope
+    def select_date(date_to_select, options ={})
+      date = date_to_select.is_a?(Date) || date_to_select.is_a?(Time) ?
+                date_to_select : Date.parse(date_to_select)
+
+      id_prefix = locate_id_prefix(options) do
+        raise NotImplementedError.new("select_date without :from key is not implemented yet.")
+      end
+
+      select date.year, :from => "#{id_prefix}_#{DATE_TIME_SUFFIXES[:year]}"
+      select date.strftime('%B'), :from => "#{id_prefix}_#{DATE_TIME_SUFFIXES[:month]}"
+      select date.day, :from => "#{id_prefix}_#{DATE_TIME_SUFFIXES[:day]}"
+    end
+
+    webrat_deprecate :selects_date, :select_date
+
     def uncheck(id_or_name_or_label)
       check(id_or_name_or_label, false)
     end
@@ -93,5 +117,21 @@ module Webrat
       block.call
       container.browser.webclient.confirm_handler = old_handler
     end
+
+    # FIXME duplication with webrat/core/scop
+    def locate_id_prefix(options, &location_strategy) #:nodoc:
+      return options[:id_prefix] if options[:id_prefix]
+
+      if options[:from]
+        if (label = element_locator(options[:from], :label))
+          label.for
+        else
+          raise NotFoundError.new("Could not find the label with text #{options[:from]}")
+        end
+      else
+        yield
+      end
+    end
+
   end
 end

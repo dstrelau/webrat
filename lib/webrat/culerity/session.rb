@@ -97,6 +97,7 @@ module Webrat #:nodoc:
     def_delegators :current_scope, :field_with_id
     def_delegators :current_scope, :response_body
     def_delegators :current_scope, :select,        :selects
+    def_delegators :current_scope, :select_date,   :selects_date
     def_delegators :current_scope, :uncheck,       :unchecks
 
   protected

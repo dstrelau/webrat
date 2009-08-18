@@ -4,7 +4,7 @@ module Webrat
       @container    = container
       @value        = value
       @element_type = element_type
-      @how          = how.blank? ? [:id, :name, :label] : how
+      @how          = how.blank? ? [:id, :name, :label, :text] : how
     end
 
     def locate
