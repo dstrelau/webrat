@@ -13,8 +13,11 @@ module Webrat
   end
 
   def self.session_class
-    if Webrat.configuration.mode == :selenium
+    case Webrat.configuration.mode
+    when :selenium
       SeleniumSession
+    when :culerity
+      CuleritySession
     else
       Session
     end
@@ -37,8 +40,6 @@ module Webrat
       SinatraAdapter
     when :mechanize
       MechanizeAdapter
-    when :culerity
-      CuleritySession
     else
       raise WebratError.new(<<-STR)
 Unknown Webrat mode: #{Webrat.configuration.mode.inspect}
