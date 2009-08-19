@@ -15,8 +15,6 @@ module Webrat #:nodoc:
     include Webrat::SaveAndOpenPage
     extend Forwardable
 
-    attr_reader :current_url
-
     def initialize(*args) # :nodoc:
     end
 
@@ -24,10 +22,14 @@ module Webrat #:nodoc:
       CulerityResponse.new(response_body)
     end
 
+    def current_url
+      container.url
+    end
+
     def visit(url = nil, http_method = :get, data = {})
       reset
       # TODO querify data
-      @current_url = container.goto(absolute_url(url))
+      container.goto(absolute_url(url))
     end
 
     webrat_deprecate :visits, :visit
