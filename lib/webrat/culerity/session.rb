@@ -107,15 +107,19 @@ module Webrat #:nodoc:
 
     def container
       setup unless $setup_done
-      unless @_browser
-        @_server = ::Culerity::run_server
-        @_browser = ::Culerity::RemoteBrowserProxy.new @_server, {:browser => :firefox, :log_level => :off}
-        at_exit do
-          @_browser.exit
-          @_server.close
-        end
+      browser
+    end
+
+    def browser
+      @_browser ||= begin
+        $browser ||= ::Culerity::RemoteBrowserProxy.new(server, {:browser => :firefox, :log_level => :off})
+        $browser.clear_cookies
+        $browser
       end
-      @_browser
+    end
+
+    def server
+      $server ||= ::Culerity::run_server
     end
 
     def absolute_url(url) #:nodoc:
@@ -145,6 +149,8 @@ module Webrat #:nodoc:
         silence_stream(STDOUT) do
           Webrat.stop_app_server
         end
+        $browser.exit if $browser
+        $server.close if $server
       end
     end
 
