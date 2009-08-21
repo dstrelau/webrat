@@ -62,6 +62,11 @@ module Webrat
     end
 
     webrat_deprecate :fills_in, :fill_in
+    
+    def attach_file(id_or_name_or_label, path)
+      elem = element_locator(id_or_name_or_label, :file_field)
+      elem.set(path)
+    end
 
     def response_body
       container.html

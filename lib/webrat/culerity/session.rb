@@ -94,6 +94,7 @@ module Webrat #:nodoc:
     def_delegators :current_scope, :click_button,  :clicks_button
     def_delegators :current_scope, :click_link,    :clicks_link
     def_delegators :current_scope, :fill_in,       :fills_in
+    def_delegators :current_scope, :attach_file
     def_delegators :current_scope, :field_by_xpath
     def_delegators :current_scope, :field_labeled
     def_delegators :current_scope, :field_with_id
