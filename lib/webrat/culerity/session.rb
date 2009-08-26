@@ -89,19 +89,31 @@ module Webrat #:nodoc:
       scope
     end
 
-    def_delegators :current_scope, :check,         :checks
-    def_delegators :current_scope, :choose,        :chooses
-    def_delegators :current_scope, :click_button,  :clicks_button
-    def_delegators :current_scope, :click_link,    :clicks_link
-    def_delegators :current_scope, :fill_in,       :fills_in
-    def_delegators :current_scope, :attach_file
-    def_delegators :current_scope, :field_by_xpath
-    def_delegators :current_scope, :field_labeled
-    def_delegators :current_scope, :field_with_id
-    def_delegators :current_scope, :response_body
-    def_delegators :current_scope, :select,        :selects
-    def_delegators :current_scope, :select_date,   :selects_date
-    def_delegators :current_scope, :uncheck,       :unchecks
+    def self.delegate_and_wait(*methods)
+      for method in methods
+        module_eval(<<-RUBY, __FILE__, __LINE__+1)
+          def #{method}(*args, &block)
+            result = current_scope.__send__(:#{method}, *args, &block)
+            container.wait
+            result
+          end
+        RUBY
+      end
+    end
+
+    delegate_and_wait :check, :checks
+    delegate_and_wait :choose, :chooses
+    delegate_and_wait :click_button, :clicks_button
+    delegate_and_wait :click_link, :clicks_link
+    delegate_and_wait :fill_in, :fills_in
+    delegate_and_wait :attach_file
+    delegate_and_wait :field_by_xpath
+    delegate_and_wait :field_labeled
+    delegate_and_wait :field_with_id
+    delegate_and_wait :response_body
+    delegate_and_wait :select, :selects
+    delegate_and_wait :select_date, :selects_date
+    delegate_and_wait :uncheck, :unchecks
 
   protected
 
