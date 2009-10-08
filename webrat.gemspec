@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bryan Helmkamp"]
-  s.date = %q{2009-08-18}
+  s.date = %q{2009-10-08}
   s.description = %q{Webrat lets you quickly write expressive and robust acceptance tests
 for a Ruby web application. It supports simulating a browser inside
 a Ruby process to avoid the performance hit and browser dependency of
@@ -32,6 +32,11 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "VERSION",
      "install.rb",
      "lib/webrat.rb",
+     "lib/webrat/adapters/mechanize.rb",
+     "lib/webrat/adapters/merb.rb",
+     "lib/webrat/adapters/rack.rb",
+     "lib/webrat/adapters/rails.rb",
+     "lib/webrat/adapters/sinatra.rb",
      "lib/webrat/core.rb",
      "lib/webrat/core/configuration.rb",
      "lib/webrat/core/elements/area.rb",
@@ -65,9 +70,6 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "lib/webrat/core/scope.rb",
      "lib/webrat/core/session.rb",
      "lib/webrat/core/xml.rb",
-     "lib/webrat/core/xml/hpricot.rb",
-     "lib/webrat/core/xml/nokogiri.rb",
-     "lib/webrat/core/xml/rexml.rb",
      "lib/webrat/core_extensions/blank.rb",
      "lib/webrat/core_extensions/deprecate.rb",
      "lib/webrat/core_extensions/detect_mapped.rb",
@@ -83,12 +85,12 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "lib/webrat/culerity/locator.rb",
      "lib/webrat/culerity/scope.rb",
      "lib/webrat/culerity/session.rb",
-     "lib/webrat/mechanize.rb",
+     "lib/webrat/integrations/culerity.rb",
+     "lib/webrat/integrations/merb.rb",
+     "lib/webrat/integrations/rails.rb",
+     "lib/webrat/integrations/rspec-rails.rb",
+     "lib/webrat/integrations/selenium.rb",
      "lib/webrat/merb.rb",
-     "lib/webrat/merb_adapter.rb",
-     "lib/webrat/merb_multipart_support.rb",
-     "lib/webrat/rack.rb",
-     "lib/webrat/rails.rb",
      "lib/webrat/rspec-rails.rb",
      "lib/webrat/selenium.rb",
      "lib/webrat/selenium/application_server_factory.rb",
@@ -113,7 +115,6 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "lib/webrat/selenium/selenium_rc_server.rb",
      "lib/webrat/selenium/selenium_session.rb",
      "lib/webrat/selenium/silence_stream.rb",
-     "lib/webrat/sinatra.rb",
      "spec/fakes/test_adapter.rb",
      "spec/integration/mechanize/Rakefile",
      "spec/integration/mechanize/config.ru",
@@ -165,6 +166,7 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "spec/integration/rails/app/views/webrat/before_redirect_form.html.erb",
      "spec/integration/rails/app/views/webrat/buttons.html.erb",
      "spec/integration/rails/app/views/webrat/form.html.erb",
+     "spec/integration/rails/app/views/webrat/within.html.erb",
      "spec/integration/rails/config/boot.rb",
      "spec/integration/rails/config/environment.rb",
      "spec/integration/rails/config/environments/development.rb",
@@ -206,11 +208,8 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "spec/private/core/configuration_spec.rb",
      "spec/private/core/field_spec.rb",
      "spec/private/core/link_spec.rb",
-     "spec/private/core/logging_spec.rb",
      "spec/private/core/session_spec.rb",
      "spec/private/mechanize/mechanize_adapter_spec.rb",
-     "spec/private/merb/attaches_file_spec.rb",
-     "spec/private/merb/merb_adapter_spec.rb",
      "spec/private/nokogiri_spec.rb",
      "spec/private/rails/attaches_file_spec.rb",
      "spec/private/rails/rails_adapter_spec.rb",
@@ -252,7 +251,7 @@ Most Ruby web frameworks and testing frameworks are supported.}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{webrat}
-  s.rubygems_version = %q{1.3.4}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Ruby Acceptance Testing for Web applications}
   s.test_files = [
     "spec/fakes/test_adapter.rb",
@@ -308,11 +307,8 @@ Most Ruby web frameworks and testing frameworks are supported.}
      "spec/private/core/configuration_spec.rb",
      "spec/private/core/field_spec.rb",
      "spec/private/core/link_spec.rb",
-     "spec/private/core/logging_spec.rb",
      "spec/private/core/session_spec.rb",
      "spec/private/mechanize/mechanize_adapter_spec.rb",
-     "spec/private/merb/attaches_file_spec.rb",
-     "spec/private/merb/merb_adapter_spec.rb",
      "spec/private/nokogiri_spec.rb",
      "spec/private/rails/attaches_file_spec.rb",
      "spec/private/rails/rails_adapter_spec.rb",
@@ -354,12 +350,21 @@ Most Ruby web frameworks and testing frameworks are supported.}
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<nokogiri>, [">= 1.2.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.0"])
+      s.add_development_dependency(%q<rails>, [">= 2.3"])
+      s.add_development_dependency(%q<merb-core>, [">= 1.0"])
+      s.add_development_dependency(%q<launchy>, [">= 0"])
     else
       s.add_dependency(%q<nokogiri>, [">= 1.2.0"])
       s.add_dependency(%q<rack>, [">= 1.0"])
+      s.add_dependency(%q<rails>, [">= 2.3"])
+      s.add_dependency(%q<merb-core>, [">= 1.0"])
+      s.add_dependency(%q<launchy>, [">= 0"])
     end
   else
     s.add_dependency(%q<nokogiri>, [">= 1.2.0"])
     s.add_dependency(%q<rack>, [">= 1.0"])
+    s.add_dependency(%q<rails>, [">= 2.3"])
+    s.add_dependency(%q<merb-core>, [">= 1.0"])
+    s.add_dependency(%q<launchy>, [">= 0"])
   end
 end
